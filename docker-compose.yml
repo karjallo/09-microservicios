@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  # --- AUTENTICACIÓN ---
+  auth:
+    build: ./auth
+    ports:
+      - "8001:8000"
+    env_file:
+      - ./auth/.env
+    depends_on:
+      - auth-db
+    restart: always
+
+  auth-db:
+    image: postgres:15-alpine
+    env_file:
+      - ./auth/.env
+    restart: always
+
+  # --- CATÁLOGO ---
+  catalog:
+    build: ./catalog
+    ports:
+      - "8002:8000"
+    env_file:
+      - ./catalog/.env
+    depends_on:
+      - catalog-db
+    restart: always
+
+  catalog-db:
+    image: postgres:15-alpine
+    env_file:
+      - ./catalog/.env
+    restart: always
+
+  # --- INVENTARIO ---
+  inventory:
+    build: ./inventory
+    ports:
+      - "8003:8000"
+    env_file:
+      - ./inventory/.env
+    depends_on:
+      - inventory-db
+    restart: always
+
+  inventory-db:
+    image: postgres:15-alpine
+    env_file:
+      - ./inventory/.env
+    restart: always
+
+  # --- ÓRDENES ---
+  order:
+    build: ./order
+    ports:
+      - "8004:8000"
+    env_file:
+      - ./order/.env
+    depends_on:
+      - order-db
+    restart: always
+
+  order-db:
+    image: postgres:15-alpine
+    env_file:
+      - ./order/.env
+    restart: always
+
+  # --- PAGOS ---
+  payment:
+    build: ./payment
+    ports:
+      - "8005:8000"
+    env_file:
+      - ./payment/.env
+    depends_on:
+      - payment-db
+    restart: always
+
+  payment-db:
+    image: postgres:15-alpine
+    env_file:
+      - ./payment/.env
+    restart: always
