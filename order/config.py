@@ -1,7 +1,13 @@
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    INTERNAL_SERVICE_TOKEN: str = "default_token"
-    DATABASE_URL: str = "sqlite:///./app.db"
+    INTERNAL_SERVICE_TOKEN: str
+    DATABASE_URL: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_DB: str
+
+    class Config:
+        env_file = ".env"
 
 settings = Settings()
