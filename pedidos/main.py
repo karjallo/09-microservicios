@@ -12,24 +12,24 @@ app = FastAPI(title="Microservicio Base")
 def health_check():
     return {"status": "ok", "mensaje": "El servicio está vivo"}
 
-# busqueda por id, brinda cantidades, si no se coloca id, se pasa lista completa
-@app.get("/items")
+# TODO: brinda los pedidos realizados por el usuario
+@app.get("/pedidos")
 def get_item(id: int | None, db: Session = Depends(database.get_db)):
-    busqueda = db.query(models.Order)
+    busqueda = db.query(models.Pedidos)
     # si existe nombre filtramos, sino hacemos return lista completa
     # evitamos if id: para evitar imprecisiones cuando id = 0 -> false
     if id is not None:
-        busqueda = busqueda.filter(models.Order.id == id)
+        busqueda = busqueda.filter(models.Pedidos.id == id)
 
     return busqueda.all()
 
-# TODO: post endpoint
+# TODO: post endpoint para crear pedido con id de producto
 
 # recibe id y otro int pudiendo ser este negativo, para realizar cambios
-@app.patch("/items/{id}", response_model=schemas.OrderResponse)
+@app.patch("/pedidos/{id}", response_model=schemas.PedidosResponse)
 def edit_item(id: int, delta: int, db: Session = Depends(database.get_db)):
     # buscar si existe el item en db con el id dado
-    item_db = db.query(models.Order).filter(models.Order.id == id).first()
+    item_db = db.query(models.Pedidos).filter(models.Pedidos.id == id).first()
     if item_db is None:
         raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -45,10 +45,10 @@ def edit_item(id: int, delta: int, db: Session = Depends(database.get_db)):
     return item_db
 
 # actualiza cantidades (reemplaza)
-@app.put("/items/{id}", response_model=schemas.OrderResponse)
+@app.put("/pedidos/{id}", response_model=schemas.PedidosResponse)
 def replace_item(id: int, cantidad: int, db : Session = Depends(database.get_db)):
     # corroborar que exista
-    item_db = db.query(models.Order).filter(models.Order.id == id).first()
+    item_db = db.query(models.Pedidos).filter(models.Pedidos.id == id).first()
     if item_db is None:
         raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -66,10 +66,10 @@ def replace_item(id: int, cantidad: int, db : Session = Depends(database.get_db)
 
 # TODO: tras eliminar una entrada en catalog, mandar a inventory para que se
 # elimine tambien
-@app.delete("/items/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/pedidos/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_item(id: int, db : Session = Depends(database.get_db)):
     # corroborar que exista
-    item_db = db.query(models.Order).filter(models.Order.id == id).first()
+    item_db = db.query(models.Pedidos).filter(models.Pedidos.id == id).first()
     if item_db is None:
         raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

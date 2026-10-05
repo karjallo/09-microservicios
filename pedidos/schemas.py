@@ -1,26 +1,26 @@
 from pydantic import BaseModel
 from datetime import datetime
 
-class OrderBase(BaseModel):
+class PedidosBase(BaseModel):
     id_producto : str
     cantidad    : int
     precio      : int
     total       : int
 
-class OrderCreate(OrderBase):
+class PedidosCreate(PedidosBase):
     pass
 
-class OrderUpdate(BaseModel):
+class PedidosUpdate(BaseModel):
     id          : int
     id_producto : int | None = None
     cantidad    : int | None = None
     precio      : int | None = None
     total       : int | None = None
 
-class OrderReplace(OrderBase):
+class PedidosReplace(PedidosBase):
     pass
 
-class OrderResponse(OrderBase):
+class PedidosResponse(PedidosBase):
     id          : int
     created_at  : datetime
 

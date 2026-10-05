@@ -14,31 +14,31 @@ def health_check():
 # TODO: ver si no es mejor crear un schema de busqueda
 @app.get("/items")
 def get_item(id: int | None = None, nombre: str | None = None, db: Session = Depends(database.get_db)):
-    busqueda = db.query(models.Catalog)
+    busqueda = db.query(models.Productos)
     # si existe nombre filtramos, sino hacemos return lista completa
     # ilike permite comodin en este caso %string% busca texto inicial, final o intermedio
     if nombre:
-        busqueda = busqueda.filter(models.Catalog.nombre.ilike("f%{name}%"))
+        busqueda = busqueda.filter(models.Productos.nombre.ilike("f%{name}%"))
     # evitamos if id: para evitar imprecisiones cuando id = 0 -> false
     if id is not None:
-        busqueda = busqueda.filter(models.Catalog.id == id)
+        busqueda = busqueda.filter(models.Productos.id == id)
 
     return busqueda.all()
 
 # TODO: tras crear un item nuevo, mandar a inventory para que coincidan ids
-@app.post("/items", response_model=schemas.CatalogResponse)
-def create_item(item: schemas.CatalogCreate, db: Session = Depends(database.get_db)):
-    nuevo_item = models.Catalog(nombre=item.nombre, precio=item.precio)
+@app.post("/items", response_model=schemas.ProductosResponse)
+def create_item(item: schemas.ProductosCreate, db: Session = Depends(database.get_db)):
+    nuevo_item = models.Productos(nombre=item.nombre, precio=item.precio)
     db.add(nuevo_item)
     db.commit()
     db.refresh(nuevo_item)
     return nuevo_item
 
 # recibe id del producto y nombre, precio
-@app.patch("/items/{id}", response_model=schemas.CatalogResponse)
-def edit_item(id: int, item_data: schemas.CatalogUpdate, db: Session = Depends(database.get_db)):
+@app.patch("/items/{id}", response_model=schemas.ProductosResponse)
+def edit_item(id: int, item_data: schemas.ProductosUpdate, db: Session = Depends(database.get_db)):
     # buscar si existe el item en db con el id dado
-    item_db = db.query(models.Catalog).filter(models.Catalog.id == id).first()
+    item_db = db.query(models.Productos).filter(models.Productos.id == id).first()
     if item_db is None:
         raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -58,10 +58,10 @@ def edit_item(id: int, item_data: schemas.CatalogUpdate, db: Session = Depends(d
 
     return item_db
 
-@app.put("/items/{id}", response_model=schemas.CatalogResponse)
-def replace_item(id: int, item: schemas.CatalogReplace, db : Session = Depends(database.get_db)):
+@app.put("/items/{id}", response_model=schemas.ProductosResponse)
+def replace_item(id: int, item: schemas.ProductosReplace, db : Session = Depends(database.get_db)):
     # corroborar que exista
-    item_db = db.query(models.Catalog).filter(models.Catalog.id == id).first()
+    item_db = db.query(models.Productos).filter(models.Productos.id == id).first()
     if item_db is None:
         raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -83,7 +83,7 @@ def replace_item(id: int, item: schemas.CatalogReplace, db : Session = Depends(d
 @app.delete("/items/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_item(id: int, db : Session = Depends(database.get_db)):
     # corroborar que exista
-    item_db = db.query(models.Catalog).filter(models.Catalog.id == id).first()
+    item_db = db.query(models.Productos).filter(models.Productos.id == id).first()
     if item_db is None:
         raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

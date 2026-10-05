@@ -1,20 +1,20 @@
 from pydantic import BaseModel
 
-class CatalogBase(BaseModel):
+class ProductosBase(BaseModel):
     nombre: str
     precio: int
 
-class CatalogCreate(CatalogBase):
+class ProductosCreate(ProductosBase):
     pass
 
-class CatalogUpdate(BaseModel):
+class ProductosUpdate(BaseModel):
     nombre: str | None = None
     precio: int | None = None
 
-class CatalogReplace(CatalogBase):
+class ProductosReplace(ProductosBase):
     pass
 
-class CatalogResponse(CatalogCreate):
+class ProductosResponse(ProductosCreate):
     id: int
 
     class Config:

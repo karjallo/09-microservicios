@@ -1,20 +1,20 @@
 from pydantic import BaseModel
 
-class InventoryBase(BaseModel):
+class InventarioBase(BaseModel):
     nombre: str
     precio: int
 
-class InventoryCreate(InventoryBase):
+class InventarioCreate(InventarioBase):
     pass
 
-class InventoryUpdate(BaseModel):
+class InventarioUpdate(BaseModel):
     nombre: str | None = None
     precio: str | None = None
 
-class InventoryReplace(InventoryBase):
+class InventarioReplace(InventarioBase):
     pass
 
-class InventoryResponse(InventoryCreate):
+class InventarioResponse(InventarioCreate):
     id: int
 
     class Config:
