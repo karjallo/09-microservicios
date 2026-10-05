@@ -23,8 +23,7 @@ def get_item(id: int | None, db: Session = Depends(database.get_db)):
 
     return busqueda.all()
 
-# no se crea un endpoint del tipo post, ya que para crear un item
-# debe realizarse en catalog
+# TODO: post endpoint
 
 # recibe id y otro int pudiendo ser este negativo, para realizar cambios
 @app.patch("/items/{id}", response_model=schemas.OrderResponse)
