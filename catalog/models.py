@@ -1,9 +1,9 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column
 from database import Base
 
 class Catalog(Base):
     __tablename__ = "catalog_db"
-    id = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String, unique=True, index=True)
-    precio = Column(Integer)
+    id     : Mapped[int] = mapped_column(primary_key=True, index=True)
+    nombre : Mapped[str] = mapped_column(unique=True, index=True)
+    precio : Mapped[int] = mapped_column()
 

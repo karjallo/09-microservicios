@@ -1,3 +1,4 @@
+# TODO: considerar si es necesaria la implementacion de payment
 from fastapi import FastAPI, Depends
 import models, database, security
 

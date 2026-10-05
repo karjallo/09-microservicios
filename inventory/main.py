@@ -1,3 +1,4 @@
+# TODO: actualizar par aque refleje order
 from fastapi import FastAPI, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 import models, database, security, schemas
@@ -11,31 +12,23 @@ app = FastAPI(title="Microservicio Base")
 def health_check():
     return {"status": "ok", "mensaje": "El servicio está vivo"}
 
+# busqueda por id, brinda cantidades, si no se coloca id, se pasa lista completa
 @app.get("/items")
-def get_item(id: int, nombre: str, db: Session = Depends(database.get_db)):
+def get_item(id: int, db: Session = Depends(database.get_db)):
     busqueda = db.query(models.Inventory)
     # si existe nombre filtramos, sino hacemos return lista completa
-    # ilike permite comodin en este caso %string% busca texto inicial, final o intermedio
-    if nombre:
-        busqueda = busqueda.filter(models.Inventory.nombre.ilike("f%{name}%"))
     # evitamos if id: para evitar imprecisiones cuando id = 0 -> false
     if id is not None:
         busqueda = busqueda.filter(models.Inventory.id == id)
 
     return busqueda
 
-# TODO: tras crear un item nuevo, mandar a inventory para que coincidan ids
-@app.post("/items", response_model=schemas.InventoryResponse)
-def create_item(item: schemas.InventoryCreate, db: Session = Depends(database.get_db)):
-    nuevo_item = models.Inventory(nombre=item.nombre, precio=item.precio)
-    db.add(nuevo_item)
-    db.commit()
-    db.refresh(nuevo_item)
-    return nuevo_item
+# no se crea un endpoint del tipo post, ya que para crear un item
+# debe realizarse en catalog
 
-# recibe id del producto y nombre, precio
+# recibe id y otro int pudiendo ser este negativo, para realizar cambios
 @app.patch("/items/{id}", response_model=schemas.InventoryResponse)
-def edit_item(id: int, item_data: schemas.InventoryUpdate, db: Session = Depends(database.get_db)):
+def edit_item(id: int, delta: int, db: Session = Depends(database.get_db)):
     # buscar si existe el item en db con el id dado
     item_db = db.query(models.Inventory).filter(models.Inventory.id == id).first()
     if item_db is None:
@@ -44,12 +37,7 @@ def edit_item(id: int, item_data: schemas.InventoryUpdate, db: Session = Depends
                 detail=f"El item con id {id} no existe"
                 )
 
-    # actualizar solo los campos pasados
-    if item_data.nombre is not None:
-        item_db.nombre = item_data.nombre
-
-    if item_data.precio is not None:
-        item_db.precio = item_data.precio
+    item_db.cantidad = item_db.cantidad + delta
 
     # commit cambios
     db.commit()
@@ -57,8 +45,9 @@ def edit_item(id: int, item_data: schemas.InventoryUpdate, db: Session = Depends
 
     return item_db
 
+# actualiza cantidades (reemplaza)
 @app.put("/items/{id}", response_model=schemas.InventoryResponse)
-def replace_item(id: int, item: schemas.InventoryReplace, db : Session = Depends(database.get_db)):
+def replace_item(id: int, cantidad: int, db : Session = Depends(database.get_db)):
     # corroborar que exista
     item_db = db.query(models.Inventory).filter(models.Inventory.id == id).first()
     if item_db is None:
@@ -68,8 +57,7 @@ def replace_item(id: int, item: schemas.InventoryReplace, db : Session = Depends
                 )
 
     # reemplazar el archivo
-    item_db.nombre = item.nombre
-    item_db.precio = item.precio
+    item_db.cantidad = cantidad
 
     # commit
     db.commit()

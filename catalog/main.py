@@ -77,7 +77,7 @@ def replace_item(id: int, item: schemas.CatalogReplace, db : Session = Depends(d
 
     return item_db
 
-# TODO: tras eliminar una entrada en catalog, mandar a inventory para que se
+# TODO: tras eliminar una entrada en inventory, mandar a inventory para que se
 # elimine tambien
 @app.delete("/items/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_item(id: int, db : Session = Depends(database.get_db)):
