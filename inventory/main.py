@@ -1,4 +1,3 @@
-# TODO: actualizar par aque refleje order
 from fastapi import FastAPI, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 import models, database, security, schemas
@@ -14,14 +13,14 @@ def health_check():
 
 # busqueda por id, brinda cantidades, si no se coloca id, se pasa lista completa
 @app.get("/items")
-def get_item(id: int, db: Session = Depends(database.get_db)):
+def get_item(id: int | None, db: Session = Depends(database.get_db)):
     busqueda = db.query(models.Inventory)
     # si existe nombre filtramos, sino hacemos return lista completa
     # evitamos if id: para evitar imprecisiones cuando id = 0 -> false
     if id is not None:
         busqueda = busqueda.filter(models.Inventory.id == id)
 
-    return busqueda
+    return busqueda.all()
 
 # no se crea un endpoint del tipo post, ya que para crear un item
 # debe realizarse en catalog

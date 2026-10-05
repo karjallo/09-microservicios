@@ -11,8 +11,9 @@ app = FastAPI(title="Microservicio Base")
 def health_check():
     return {"status": "ok", "mensaje": "El servicio está vivo"}
 
+# TODO: ver si no es mejor crear un schema de busqueda
 @app.get("/items")
-def get_item(id: int, nombre: str, db: Session = Depends(database.get_db)):
+def get_item(id: int | None = None, nombre: str | None = None, db: Session = Depends(database.get_db)):
     busqueda = db.query(models.Catalog)
     # si existe nombre filtramos, sino hacemos return lista completa
     # ilike permite comodin en este caso %string% busca texto inicial, final o intermedio
@@ -22,7 +23,7 @@ def get_item(id: int, nombre: str, db: Session = Depends(database.get_db)):
     if id is not None:
         busqueda = busqueda.filter(models.Catalog.id == id)
 
-    return busqueda
+    return busqueda.all()
 
 # TODO: tras crear un item nuevo, mandar a inventory para que coincidan ids
 @app.post("/items", response_model=schemas.CatalogResponse)
