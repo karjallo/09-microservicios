@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Mapped, mapped_column
 from database import Base
 
-class Inventory(Base):
-    __tablename__ = "inventory_db"
+class Auth(Base):
+    __tablename__ = "auth_db"
     id       : Mapped[int] = mapped_column(primary_key=True, index=True)
-    cantidad : Mapped[int] = mapped_column()
+    nombre   : Mapped[str] = mapped_column(unique=True, index=True)
+    password : Mapped[str] = mapped_column()

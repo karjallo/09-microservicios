@@ -59,3 +59,4 @@ def delete_item(id: int, db : Session = Depends(database.get_db)):
     # commit
     db.delete(item_db)
     db.commit()
+
