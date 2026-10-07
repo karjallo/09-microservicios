@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 import models, database, security, schemas
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
+from security import crear_token, verificar_jwt
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def hash_password(password: str):
@@ -65,6 +66,12 @@ def login(data: schemas.AuthLogin, db: Session = Depends(database.get_db)):
 
     # TODO: returnar token y mensaje de exito
     return {
-            "mensaje": "Usuario logeado exitosamente",
+            "mensaje": "Inicio de sesion exitoso",
             }
+
+# TODO:
+@app.post("/logout", status_code=status.HTTP_200_OK)
+def logout(token):
+    # matar el token
+    pass
 

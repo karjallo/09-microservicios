@@ -7,7 +7,7 @@ services:
     networks:
       - microservicios-net
     env_file:
-      - ./auth/.env
+      - ./.env
     depends_on:
       - auth-db
     restart: always
@@ -15,7 +15,7 @@ services:
   auth-db:
     image: postgres:15-alpine
     env_file:
-      - ./auth/.env
+      - ./.env
     restart: always
 
   # productos
@@ -26,7 +26,7 @@ services:
     networks:
       - microservicios-net
     env_file:
-      - ./productos/.env
+      - ./.env
     depends_on:
       - productos-db
     restart: always
@@ -34,7 +34,7 @@ services:
   productos-db:
     image: postgres:15-alpine
     env_file:
-      - ./productos/.env
+      - ./.env
     restart: always
 
   # inventario
@@ -45,7 +45,7 @@ services:
     networks:
       - microservicios-net
     env_file:
-      - ./inventario/.env
+      - ./.env
     depends_on:
       - inventario-db
     restart: always
@@ -53,7 +53,7 @@ services:
   inventario-db:
     image: postgres:15-alpine
     env_file:
-      - ./inventario/.env
+      - ./.env
     restart: always
 
   # pedidos
@@ -64,7 +64,7 @@ services:
     networks:
       - microservicios-net
     env_file:
-      - ./pedidos/.env
+      - ./.env
     depends_on:
       - pedidos-db
     restart: always
@@ -72,5 +72,5 @@ services:
   pedidos-db:
     image: postgres:15-alpine
     env_file:
-      - ./pedidos/.env
+      - ./.env
     restart: always
