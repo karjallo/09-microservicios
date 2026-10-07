@@ -3,5 +3,6 @@ from database import Base
 
 class Inventario(Base):
     __tablename__ = "inventory_db"
-    id       : Mapped[int] = mapped_column(primary_key=True, index=True)
-    cantidad : Mapped[int] = mapped_column()
+    id          : Mapped[int] = mapped_column(primary_key=True, index=True)
+    producto_id : Mapped[int] = mapped_column(unique=True, index=True)
+    cantidad    : Mapped[int] = mapped_column()
