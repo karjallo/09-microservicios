@@ -1,11 +1,11 @@
-version: '3.8'
-
 services:
-  # --- AUTENTICACIÓN ---
+  # auth
   auth:
     build: ./auth
     ports:
       - "8001:8000"
+    networks:
+      - microservicios-net
     env_file:
       - ./auth/.env
     depends_on:
@@ -18,70 +18,59 @@ services:
       - ./auth/.env
     restart: always
 
-  # --- CATÁLOGO ---
-  catalog:
-    build: ./catalog
+  # productos
+  productos:
+    build: ./productos/
     ports:
       - "8002:8000"
+    networks:
+      - microservicios-net
     env_file:
-      - ./catalog/.env
+      - ./productos/.env
     depends_on:
-      - catalog-db
+      - productos-db
     restart: always
 
-  catalog-db:
+  productos-db:
     image: postgres:15-alpine
     env_file:
-      - ./catalog/.env
+      - ./productos/.env
     restart: always
 
-  # --- INVENTARIO ---
-  inventory:
-    build: ./inventory
+  # inventario
+  inventario:
+    build: ./inventario
     ports:
       - "8003:8000"
+    networks:
+      - microservicios-net
     env_file:
-      - ./inventory/.env
+      - ./inventario/.env
     depends_on:
-      - inventory-db
+      - inventario-db
     restart: always
 
-  inventory-db:
+  inventario-db:
     image: postgres:15-alpine
     env_file:
-      - ./inventory/.env
+      - ./inventario/.env
     restart: always
 
-  # --- ÓRDENES ---
-  order:
-    build: ./order
+  # pedidos
+  pedidos:
+    build: ./pedidos
     ports:
       - "8004:8000"
+    networks:
+      - microservicios-net
     env_file:
-      - ./order/.env
+      - ./pedidos/.env
     depends_on:
-      - order-db
+      - pedidos-db
     restart: always
 
-  order-db:
+  pedidos-db:
     image: postgres:15-alpine
     env_file:
-      - ./order/.env
-    restart: always
-
-  # --- PAGOS ---
-  payment:
-    build: ./payment
-    ports:
-      - "8005:8000"
-    env_file:
-      - ./payment/.env
-    depends_on:
-      - payment-db
-    restart: always
-
-  payment-db:
-    image: postgres:15-alpine
-    env_file:
-      - ./payment/.env
+      - ./pedidos/.env
     restart: always
